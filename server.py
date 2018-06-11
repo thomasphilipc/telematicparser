@@ -1,8 +1,12 @@
+import datetime
 import socket
 import struct
-import binascii
+import time
+
 
 from time import gmtime,strftime
+
+fmt = "%Y-%m-%d %H:%M:%S"
 
 TCP_IP = '192.168.168.11'
 TCP_PORT = 6102
@@ -26,6 +30,10 @@ def parse_string(data,length,content):
 def process_data(data):
 
     paramdict = {1:"DigitalInputStatus1",2:"DigitalInputStatus2",3:"DigitalInputStatus3",4:"DigitalInputStatus4",9:"AnalogInput1",10:"AnalogInput2",21:"GSMlevel",24:"Speed",66:"ExternalPowerVoltage",67:"BatteryVoltage",68:"BatteryCurrent",69:"GNSSStatus",72:"DallasTemperature1",73:"DallasTemperature2",74:"DallasTemperature3",75:"DallasTemperatureSensorID1",76:"DallasTemperatureSensorID2",77:"DallasTemperatureSensorID3",78:"iButtonID",79:"Networktype",80:"WorkingMode",99:"Continuousodometer",179:"DigitalOutput1state",180:"DigitalOutput2state",181:"PDOP",182:"HDOP",199:"OdometerValue(VirtualOdometer)",200:"DeepSleep",205:"CellID",206:"AreaCode",239:"Ignition",240:"MovementSensor",241:"GSMOperatorCode",155:"Geofence zone 01",156:"Geofence zone 02",157:"Geofence zone 03",158:"Geofence zone 04",159:"Geofence zone 05",175:"Auto Geofence",177:"Idling",249:"Jamming detection",250:"Trip",251:"Immobilizer",252:"Authorized driving",253:"Green driving type",254:"Green driving value",255:"Over Speeding"}
+
+    #additional for FM63
+    paramdict.update({219:"(MSB)CCID",220:"CCID",221:"(LSB)CCID",62:"DallasTemperatureID1",63:"DallasTemperatureID2",64:"DallasTemperatureID3",65:"DallasTemperatureID4",216:"TotalOdometer",218:"IMSI",22:"ActualProfile",71:"GNSSStatus",178:"NetworkType",236:"X-axis",237:"Y-axis",238:"Z-axis"})
+
     if (len(data)>34):
         print ("{} received data:  {}".format(strftime("%Y-%m-%d %H:%M:%S", gmtime()),data))
         print((len(data)/2))
@@ -49,7 +57,10 @@ def process_data(data):
 
             # timestamp
             result=pop_string(data,16)
-            print("Timestamp is {}".format(int(result, 16)))
+            epochtime =int(result, 16)
+
+            t = datetime.datetime.fromtimestamp(float(epochtime)/1000.)
+            print("Epoch is {} Timestampt is  {}".format(epochtime,t.strftime(fmt))) # prints 2012-08-28 02:45:17
             data = data[16:]
 
             result=pop_string(data,2)
@@ -73,28 +84,40 @@ def process_data(data):
             for i in range(1,value+1):
                 data,value1=parse_string(data,2,"ID")
                 data,value=parse_string(data,2,"value")
-                print( " the {} id is {} with value {}".format(i,paramdict.get(value1),value))
+                if value1 in paramdict:
+                    print( " the {} id is {} with value {}".format(i,paramdict.get(value1),value))
+                else:
+                     print( " the {} id is {} with value {}".format(i,value1,value))
 
             data,value=parse_string(data,2,"2Byte element count")
             print( " Total 2 byte elements are {}".format(value))
             for i in range(1,value+1):
                 data,value1=parse_string(data,2,"ID")
                 data,value=parse_string(data,4,"value")
-                print( " the {} id is {} with value {}".format(i,paramdict.get(value1),value))
+                if value1 in paramdict:
+                    print( " the {} id is {} with value {}".format(i,paramdict.get(value1),value))
+                else:
+                     print( " the {} id is {} with value {}".format(i,value1,value))
 
             data,value=parse_string(data,2,"4Byte element count")
             print( " Total 4 byte elements are {}".format(value))
             for i in range(1,value+1):
                 data,value1=parse_string(data,2,"ID")
                 data,value=parse_string(data,8,"value")
-                print( " the {} id is {} with value {}".format(i,paramdict.get(value1),value))
+                if value1 in paramdict:
+                    print( " the {} id is {} with value {}".format(i,paramdict.get(value1),value))
+                else:
+                     print( " the {} id is {} with value {}".format(i,value1,value))
 
             data,value=parse_string(data,2,"8Byte element count")
             print( " Total 4 byte elements are {}".format(value))
             for i in range(1,value+1):
                 data,value1=parse_string(data,2,"ID")
                 data,value=parse_string(data,16,"value")
-                print( " the {} id is {} with value {}".format(i,paramdict.get(value1),value))
+                if value1 in paramdict:
+                    print( " the {} id is {} with value {}".format(i,paramdict.get(value1),value))
+                else:
+                     print( " the {} id is {} with value {}".format(i,value1,value))
 
         data,value=parse_string(data,2,"AVL Data count")
         print( " AVL Data count {}".format(value))
@@ -102,9 +125,7 @@ def process_data(data):
         data,value=parse_string(data,8,"CRC ")
         print( " CRC {}".format(value))
 
-        #print ("Coded is {}".format(int(data[16:18], 16)))
-        #print ("Avl count is {}".format(int(data[18:20], 16)))
-        #print ("Timestamp in hex is {} and in dec {}".format(data[20:28],int(data[20:28], 16)))
+
 
 
         return (int(count, 16))
