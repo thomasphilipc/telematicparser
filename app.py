@@ -23,12 +23,7 @@ class MyForm(FlaskForm):
 
 @app.route('/')
 def hello():
-    return reder_template('reports.html')
-
-
-@app.route("/")
-def home():
-    return ("Home")
+    return  ('Home')
 
 @app.route('/teltonika/',methods=['GET', 'POST'])
 def parseteltonika():
