@@ -23,7 +23,7 @@ class MyForm(FlaskForm):
 
 @app.route('/')
 def hello():
-    return "Hello World!"
+    return reder_template('reports.html')
 
 
 @app.route("/")
