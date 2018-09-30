@@ -22,7 +22,7 @@ class MyForm(FlaskForm):
 
 
 @app.route('/')
-def hello():
+def home():
     return  ('Home')
 
 @app.route('/teltonika/',methods=['GET', 'POST'])
