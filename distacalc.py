@@ -102,7 +102,6 @@ def sanitizeroute(filename,distance_threshold = 10,filter_threshold = 10):
     rowcount=0
 
     receivedfile='uploads/'+filename
-    interimfile='uploads/interim'+filename
     resultfile='uploads/result'+filename
     base=os.path.basename(receivedfile)
     os.path.splitext(base)
@@ -117,18 +116,22 @@ def sanitizeroute(filename,distance_threshold = 10,filter_threshold = 10):
     latlist=[]
     lonlist=[]
 
-    with open(receivedfile, "r") as ins,open(interimfile, 'a') as f:
-        for line in ins:
-            line=line.replace(" ","")
-            f.write(line)
 
-
-    with open(interimfile,'r') as csvfile:
+    with open(receivedfile,'r') as csvfile, open(resultfile,'a') as research:
         reader = csv.reader(csvfile)
         for row in reader:
+            stockrow=row[:]
+            print("Stock row is {}".format(stockrow))
+            print(len(row))
+            for i in range(0,len(row)):
+                row[i]=row[i].replace(" ","")
+            print(" Edited row is {}".format(row))
 
             if (rowcount==0):
                 print(row[0].replace('.','',1).isdigit())
+                print(row[0])
+                research.write(','.join(stockrow))
+                research.write('\n')
                 if row[0].replace('.','',1).isdigit():
                     print ((row[0],row[1]))
                     prev=(row[0],row[1])
@@ -148,30 +151,29 @@ def sanitizeroute(filename,distance_threshold = 10,filter_threshold = 10):
                     latlist.append(float(row[0]))
                     lonlist.append(float(row[1]))
                     skipped_distance=0
+                    research.write(','.join(stockrow))
+                    research.write('\n')
                     print ("Added {}{} --- distance apart {} with bearing {}".format(prev,(row[0],row[1]),distanceinmeter,angle_bearing))
                 else:
                     skipped_distance=skipped_distance+distanceinmeter
                     print ("ignored {}{} --- distance apart {} with bearing {}".format(prev,(row[0],row[1]),distanceinmeter,angle_bearing))
 
+
                 prev=(row[0],row[1])
                 rowcount += 1
 
+            else:
+                research.write(','.join(stockrow))
+                research.write('\n')
 
-
-
-    with open(resultfile, 'a') as f:
-        f.write('        <coordinates>\n')
-        for i in range(0,len(latlist)):
-            f.write("          "+str(latlist[i])+","+str(lonlist[i])+",0\n")
-        f.write('        </coordinates>')
 
     print("Total distance is {}".format(total_distance))
 
 
     gmap1 = gmplot.GoogleMapPlotter(lonlist[0],latlist[0],18)
-    gmap1.scatter( lonlist, latlist, '# FF0000',size = 20, marker = False )
+    gmap1.scatter( lonlist[:-2], latlist[:-2], '# FF0000',size = 20, marker = False )
 
-    gmap1.plot(lonlist, latlist,'cornflowerblue', edge_width = 10)
+    gmap1.plot(lonlist[:-2], latlist[:-2],'cornflowerblue', edge_width = 10)
 
     print(len(latlist))
     print(rowcount)
@@ -180,9 +182,9 @@ def sanitizeroute(filename,distance_threshold = 10,filter_threshold = 10):
     mapfile=filenamewithoutextention[0]+".html"
     gmap1.draw( mapfile )
     os.remove(receivedfile)
-    os.remove(interimfile)
+
     return reduction
 
 if __name__ == '__main__':
     # print_a() is only executed when the module is run directly.
-    sanitizeroute('latlonnew.txt',10,10)
+    sanitizeroute('stc.kml',10,10)

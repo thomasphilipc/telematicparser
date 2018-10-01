@@ -5,6 +5,8 @@ from wtforms.validators import DataRequired
 from flask_wtf.file import FileField
 from werkzeug import secure_filename
 import os
+import random
+import string
 
 import datetime
 import json
@@ -75,11 +77,16 @@ def cargo():
 
 
             #call function to process the data
-            filename = secure_filename(form.file.data.filename)
-            print(filename)
-            form.file.data.save('uploads/' +filename)
+            tfilename = secure_filename(form.file.data.filename)
+            print(tfilename)
+
+            base=os.path.basename(tfilename)
+            filenamewithoutextention = os.path.splitext(base)
+            filename=filenamewithoutextention[0]+"".join( [random.choice(string.ascii_letters) for i in range(5)] )+".kml"
+
             base=os.path.basename(filename)
             filenamewithoutextention = os.path.splitext(base)
+            form.file.data.save('uploads/' +filename)
             reduction=distacalc.sanitizeroute(filename,distance_threshold,filter_threshold)
 
             data = {}
@@ -108,7 +115,7 @@ def downloadfile(file,type):
             mapfile=file+".html"
             return send_file(mapfile, as_attachment=True)
          else :
-            resultfile="uploads\\"+file+".txt"
+            resultfile="uploads\\"+file+".kml"
             return send_file(resultfile, as_attachment=True)
 
 
