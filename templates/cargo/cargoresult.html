@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Talk 2 TPC {% endblock title %}
+
+{% block content %}
+{% include "nav.html" %}
+{% include "flash.html" %}
+
+<script type="text/javascript">
+window.onload = function() {
+
+    var result = "{{result.filelocation}}"
+    var file = "/download/"+result
+
+
+    document.getElementById("map").href = "/download/m/"+result;
+
+
+    document.getElementById("file").href = "/download/f/result"+result;
+
+    document.getElementById("frame").src = "get_map/"+result;
+
+};
+</script>
+<!-- Page Content -->
+<section id="catalog" class="section">
+
+    <div class="container">
+
+        <div class="row">
+
+
+            <div>
+                <div class="panel panel-default">
+                <div class="panel-heading">Cargo KML Data</div>
+                 <div class="panel-body">Below is the processed KML replacement
+
+
+                        <div>
+
+                            Below map shows the route that will be plotted
+                            <span id="parsed"> {{result.filelocation}}</span>
+                        </div>
+                     <div>
+                        <iframe id="frame" frameborder='0' height="500px" width="100%" src="" frameborder="0" allowfullscreen ></iframe>
+                     </div>
+                     <div class ="well">
+                        <a href="" id="map">Click here to Download Map</a>
+                     </div>
+                     <div class ="well">
+                        <a href="" id="file">Click here to Download File</a>
+                     </div>
+
+
+                 </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /.section -->
+{% endblock %}

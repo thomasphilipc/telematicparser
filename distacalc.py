@@ -2,6 +2,7 @@ import math
 import csv
 import gmplot
 import numpy as np
+import os
 from math import degrees, atan2
 
 def calculate_initial_compass_bearing(pointA, pointB):
@@ -96,74 +97,91 @@ def distancenew(origin,destination):
 
     return round((2 * R * np.arcsin(np.sqrt(d)))*1000)
 
-rowcount=0
 
-threshold=10
-#if distance is less than the above threshold then the current location is ignored
-filter_threshold=10
-#if the skipped distance total is more than above threshold then the current location is not ignored
-total_distance=0
-skipped_distance=0
-latlist=[]
-lonlist=[]
+def sanitizeroute(filename,distance_threshold = 10,filter_threshold = 10):
+    rowcount=0
 
-with open("latlonnew.txt", "r") as ins,open('interimlatlon.txt', 'a') as f:
-    for line in ins:
-        line=line.replace(" ","")
-        f.write(line)
+    receivedfile='uploads/'+filename
+    interimfile='uploads/interim'+filename
+    resultfile='uploads/result'+filename
+    base=os.path.basename(receivedfile)
+    os.path.splitext(base)
+    filenamewithoutextention = os.path.splitext(base)
+
+    threshold=int(distance_threshold)
+    #if distance is less than the above threshold then the current location is ignored
+    filter_threshold=int(filter_threshold)
+    #if the skipped distance total is more than above threshold then the current location is not ignored
+    total_distance=0
+    skipped_distance=0
+    latlist=[]
+    lonlist=[]
+
+    with open(receivedfile, "r") as ins,open(interimfile, 'a') as f:
+        for line in ins:
+            line=line.replace(" ","")
+            f.write(line)
 
 
-with open('interimlatlon.txt','r') as csvfile:
-    reader = csv.reader(csvfile)
-    for row in reader:
+    with open(interimfile,'r') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
 
-        if (rowcount==0):
-            print(row[0].replace('.','',1).isdigit())
-            if row[0].replace('.','',1).isdigit():
-                print ((row[0],row[1]))
+            if (rowcount==0):
+                print(row[0].replace('.','',1).isdigit())
+                if row[0].replace('.','',1).isdigit():
+                    print ((row[0],row[1]))
+                    prev=(row[0],row[1])
+                    rowcount += 1
+                else:
+                    rowcount=0
+
+
+            elif row[0].replace('.','',1).isdigit()> 0:
+                prevlat,prevlon=prev
+
+                distanceinmeter=distancenew((float(prevlat),float(prevlon)),(float(row[0]),float(row[1])))
+                total_distance=total_distance+distanceinmeter
+                angle_bearing=calculate_initial_compass_bearing((float(prevlat),float(prevlon)),((float(row[0]),float(row[1]))))
+
+                if(distanceinmeter>threshold) or (skipped_distance>=filter_threshold):
+                    latlist.append(float(row[0]))
+                    lonlist.append(float(row[1]))
+                    skipped_distance=0
+                    print ("Added {}{} --- distance apart {} with bearing {}".format(prev,(row[0],row[1]),distanceinmeter,angle_bearing))
+                else:
+                    skipped_distance=skipped_distance+distanceinmeter
+                    print ("ignored {}{} --- distance apart {} with bearing {}".format(prev,(row[0],row[1]),distanceinmeter,angle_bearing))
+
                 prev=(row[0],row[1])
                 rowcount += 1
-            else:
-                rowcount=0
-
-
-        elif row[0].replace('.','',1).isdigit()> 0:
-            prevlat,prevlon=prev
-
-            distanceinmeter=distancenew((float(prevlat),float(prevlon)),(float(row[0]),float(row[1])))
-            total_distance=total_distance+distanceinmeter
-            angle_bearing=calculate_initial_compass_bearing((float(prevlat),float(prevlon)),((float(row[0]),float(row[1]))))
-
-            if(distanceinmeter>threshold) or (skipped_distance>=filter_threshold):
-                latlist.append(float(row[0]))
-                lonlist.append(float(row[1]))
-                skipped_distance=0
-                print ("Added {}{} --- distance apart {} with bearing {}".format(prev,(row[0],row[1]),distanceinmeter,angle_bearing))
-            else:
-                skipped_distance=skipped_distance+distanceinmeter
-                print ("ignored {}{} --- distance apart {} with bearing {}".format(prev,(row[0],row[1]),distanceinmeter,angle_bearing))
-
-            prev=(row[0],row[1])
-            rowcount += 1
 
 
 
 
-with open('editedlatlon.txt', 'a') as f:
-    f.write('        <coordinates>\n')
-    for i in range(0,len(latlist)):
-        f.write("          "+str(latlist[i])+","+str(lonlist[i])+",0\n")
-    f.write('        </coordinates>')
+    with open(resultfile, 'a') as f:
+        f.write('        <coordinates>\n')
+        for i in range(0,len(latlist)):
+            f.write("          "+str(latlist[i])+","+str(lonlist[i])+",0\n")
+        f.write('        </coordinates>')
 
-print("Total distance is {}".format(total_distance))
+    print("Total distance is {}".format(total_distance))
 
 
-gmap1 = gmplot.GoogleMapPlotter(lonlist[0],latlist[0],18)
-gmap1.scatter( lonlist, latlist, '# FF0000',size = 20, marker = False )
+    gmap1 = gmplot.GoogleMapPlotter(lonlist[0],latlist[0],18)
+    gmap1.scatter( lonlist, latlist, '# FF0000',size = 20, marker = False )
 
-gmap1.plot(lonlist, latlist,'cornflowerblue', edge_width = 10)
+    gmap1.plot(lonlist, latlist,'cornflowerblue', edge_width = 10)
 
-print(len(latlist))
-print(rowcount)
-print("{} percentage of points were reduced".format(round(100-((len(latlist))/rowcount)*100)))
-gmap1.draw( "mapnew.html" )
+    print(len(latlist))
+    print(rowcount)
+    print("{} percentage of points were reduced".format(round(100-((len(latlist))/rowcount)*100)))
+    mapfile=filenamewithoutextention[0]+".html"
+    gmap1.draw( mapfile )
+    os.remove(receivedfile)
+    os.remove(interimfile)
+    return resultfile
+
+if __name__ == '__main__':
+    # print_a() is only executed when the module is run directly.
+    sanitizeroute('latlonnew.txt',10,10)

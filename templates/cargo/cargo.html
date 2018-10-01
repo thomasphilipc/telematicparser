@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Talk 2 TPC{% endblock title %}
+
+{% block content %}
+{% include "nav.html" %}
+{% include "flash.html" %}
+
+<script type="text/javascript">
+
+window.onload = function() {
+
+	};
+
+
+
+</script>
+
+<!-- Page Content -->
+<section id="catalog" class="section">
+
+    <div class="container">
+
+        <div class="row">
+
+
+            <div>
+                <div class="panel panel-default">
+                <div class="panel-heading">Cargo</div>
+                 <div class="panel-body">Cargo Route Editor
+
+                     <form action="" method="post" enctype="multipart/form-data">
+            {{ form.csrf_token  }}
+
+            <div class="input text">
+                {{ form.distance_threshold.label }} {{ form.distance_threshold }}
+                {{ form.filter_threshold.label }} {{ form.filter_threshold }}
+                {{ form.hidden_tag() }}
+                {{ form.file }}
+            </div>
+
+            <div class="input submit">
+                <input type="submit" value="Go" />
+            </div>
+        </form>
+
+                 </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- /.row -->
+        <div id="notes" class="well">
+        <div>Notes:</div>
+        <hr>
+            <div id="memo"> </div>
+            <div id="warehousecharges"></div>
+
+        </div>
+
+    </div>
+    <!-- /.container -->
+</section>
+<!-- /.section -->
+{% endblock %}
