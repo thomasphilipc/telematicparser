@@ -30,13 +30,8 @@ class CargoForm(FlaskForm):
     file = FileField()
 
 @app.route('/')
-def hello():
-    return "Hello World!"
-
-
-@app.route("/")
 def home():
-    return ("Home")
+    return  ('Home')
 
 @app.route('/teltonika/',methods=['GET', 'POST'])
 def parseteltonika():
