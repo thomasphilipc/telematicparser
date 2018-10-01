@@ -18,7 +18,7 @@ window.onload = function() {
 
     document.getElementById("file").href = "/download/f/result"+result;
 
-    document.getElementById("frame").src = "get_map/"+result;
+    document.getElementById("frame").src = "get_map/"+result+'?rand=' + Math.round(Math.random() * 10000000);
 
 };
 </script>
@@ -38,8 +38,10 @@ window.onload = function() {
 
                         <div>
 
-                            Below map shows the route that will be plotted
-                            <span id="parsed"> {{result.filelocation}}</span>
+                            Below map shows the route that will be plotted with below <br>
+                            <span id="parsed"> Filter Threshold set at {{result.filter_threshold}}<br></span>
+                            Distance Threshold set at {{result.distance_threshold}}<br>
+                            {{result.reduction}} % points were reduced<br>
                         </div>
                      <div>
                         <iframe id="frame" frameborder='0' height="500px" width="100%" src="" frameborder="0" allowfullscreen ></iframe>

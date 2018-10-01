@@ -175,12 +175,13 @@ def sanitizeroute(filename,distance_threshold = 10,filter_threshold = 10):
 
     print(len(latlist))
     print(rowcount)
+    reduction=round(100-((len(latlist))/rowcount)*100)
     print("{} percentage of points were reduced".format(round(100-((len(latlist))/rowcount)*100)))
     mapfile=filenamewithoutextention[0]+".html"
     gmap1.draw( mapfile )
     os.remove(receivedfile)
     os.remove(interimfile)
-    return resultfile
+    return reduction
 
 if __name__ == '__main__':
     # print_a() is only executed when the module is run directly.

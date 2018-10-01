@@ -80,10 +80,13 @@ def cargo():
             form.file.data.save('uploads/' +filename)
             base=os.path.basename(filename)
             filenamewithoutextention = os.path.splitext(base)
-            path=distacalc.sanitizeroute(filename,distance_threshold,filter_threshold)
+            reduction=distacalc.sanitizeroute(filename,distance_threshold,filter_threshold)
 
             data = {}
             data['filelocation'] = filenamewithoutextention[0]
+            data['distance_threshold'] = distance_threshold
+            data['filter_threshold'] = filter_threshold
+            data['reduction']=reduction
             json_data = json.dumps(data)
             result = json.loads(json_data)
             iframe = filenamewithoutextention[0]+".html"
