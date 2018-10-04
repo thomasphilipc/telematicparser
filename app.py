@@ -48,7 +48,7 @@ def parseteltonika():
             print("rawdata {}".format(rawdata))
             parsed=teltonikaparser.parsed_data(rawdata)
             print("parsed data : {}".format(parsed))
-            #prepare json
+            #prepare json0
             data = {}
             data['parsed'] = parsed
             json_data = json.dumps(data)
