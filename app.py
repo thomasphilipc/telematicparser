@@ -115,7 +115,7 @@ def downloadfile(file,type):
             mapfile=file+".html"
             return send_file(mapfile, as_attachment=True)
          else :
-            resultfile="uploads\\"+file+".kml"
+            resultfile="uploads/"+file+".kml"
             return send_file(resultfile, as_attachment=True)
 
 
