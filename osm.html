@@ -15,7 +15,7 @@
     <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
     <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
     
-    <style>#map_6dddefbb379245289dc19b5917e10df5 {
+    <style>#map_355a3d7aa0f14573bd4d7e20ac8ad099 {
         position: relative;
         width: 100.0%;
         height: 100.0%;
@@ -23,10 +23,12 @@
         top: 0.0%;
         }
     </style>
+    <script src="https://cdn.rawgit.com/ljagis/leaflet-measure/2.1.7/dist/leaflet-measure.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/ljagis/leaflet-measure/2.1.7/dist/leaflet-measure.css"/>
 </head>
 <body>    
     
-    <div class="folium-map" id="map_6dddefbb379245289dc19b5917e10df5" ></div>
+    <div class="folium-map" id="map_355a3d7aa0f14573bd4d7e20ac8ad099" ></div>
 </body>
 <script>    
     
@@ -34,10 +36,10 @@
         var bounds = null;
     
 
-    var map_6dddefbb379245289dc19b5917e10df5 = L.map(
-        'map_6dddefbb379245289dc19b5917e10df5', {
+    var map_355a3d7aa0f14573bd4d7e20ac8ad099 = L.map(
+        'map_355a3d7aa0f14573bd4d7e20ac8ad099', {
         center: [25.09841, 55.16275],
-        zoom: 12,
+        zoom: 2,
         maxBounds: bounds,
         layers: [],
         worldCopyJump: false,
@@ -47,128 +49,152 @@
 
     
     
-    var tile_layer_93554ae6bd254a1ab9a8e03037ea4d5d = L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    var tile_layer_4af1616bd82849d5aecf736254ef1169 = L.tileLayer(
+        'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoidGFsazJ0cGMiLCJhIjoiY2ptenozdm0yMWlyNTNwcGhwbzc3dG9rNCJ9.NzVTxRk8eVz6g_BrbjonWg',
         {
-        "attribution": null,
+        "attribution": "Mapbox",
         "detectRetina": false,
         "maxNativeZoom": 18,
         "maxZoom": 18,
         "minZoom": 0,
         "noWrap": false,
         "subdomains": "abc"
-}).addTo(map_6dddefbb379245289dc19b5917e10df5);
+}).addTo(map_355a3d7aa0f14573bd4d7e20ac8ad099);
     
-        var marker_fba0e536a70f482ca98725a1c1b982e3 = L.marker(
+                var lat_lng_popup_227b9efe2a7f442183a2baf95fb85078 = L.popup();
+                function latLngPop(e) {
+                    lat_lng_popup_227b9efe2a7f442183a2baf95fb85078
+                        .setLatLng(e.latlng)
+                        .setContent("Latitude: " + e.latlng.lat.toFixed(4) +
+                                    "<br>Longitude: " + e.latlng.lng.toFixed(4))
+                        .openOn(map_355a3d7aa0f14573bd4d7e20ac8ad099);
+                    }
+                map_355a3d7aa0f14573bd4d7e20ac8ad099.on('click', latLngPop);
+            
+    
+            var feature_group_e5bfd118590849c89837a81efb5336f0 = L.featureGroup(
+                ).addTo(map_355a3d7aa0f14573bd4d7e20ac8ad099);
+        
+    
+        var marker_b0d3d659998e41eaa483f0ba37bc925d = L.marker(
             [25.09955, 55.16263],
             {
                 icon: new L.Icon.Default()
                 }
-            ).addTo(map_6dddefbb379245289dc19b5917e10df5);
+            ).addTo(feature_group_e5bfd118590849c89837a81efb5336f0);
         
     
 
-                var icon_0cb7341b30c54654bf78429741117b86 = L.AwesomeMarkers.icon({
+                var icon_39c65711d9294fda87743c77a686a94f = L.AwesomeMarkers.icon({
                     icon: 'dashboard',
                     iconColor: 'white',
                     markerColor: 'blue',
                     prefix: 'glyphicon',
                     extraClasses: 'fa-rotate-0'
                     });
-                marker_fba0e536a70f482ca98725a1c1b982e3.setIcon(icon_0cb7341b30c54654bf78429741117b86);
+                marker_b0d3d659998e41eaa483f0ba37bc925d.setIcon(icon_39c65711d9294fda87743c77a686a94f);
             
     
-            var popup_7d3a9be7d37146a3b9dbfae0dbe2454f = L.popup({maxWidth: '300'
+            var popup_4f6d5053827c44738ed98f2a6ef2f4a0 = L.popup({maxWidth: '300'
             
             });
 
             
-                var html_54b61e7d0c0a42c9b7e8e2e26d8bccfc = $('<div id="html_54b61e7d0c0a42c9b7e8e2e26d8bccfc" style="width: 100.0%; height: 100.0%;">Mt. Hood Meadows</div>')[0];
-                popup_7d3a9be7d37146a3b9dbfae0dbe2454f.setContent(html_54b61e7d0c0a42c9b7e8e2e26d8bccfc);
+                var html_4d8e720d67614ff38491635892fc71ad = $('<div id="html_4d8e720d67614ff38491635892fc71ad" style="width: 100.0%; height: 100.0%;">Mt. Hood Meadows</div>')[0];
+                popup_4f6d5053827c44738ed98f2a6ef2f4a0.setContent(html_4d8e720d67614ff38491635892fc71ad);
             
 
-            marker_fba0e536a70f482ca98725a1c1b982e3.bindPopup(popup_7d3a9be7d37146a3b9dbfae0dbe2454f)
+            marker_b0d3d659998e41eaa483f0ba37bc925d.bindPopup(popup_4f6d5053827c44738ed98f2a6ef2f4a0)
             ;
 
             
         
     
-        var marker_3e78d22be8844349b36eb69084d17dd9 = L.marker(
+        var marker_c35a0c440f6147df9b5cab54b8d7612e = L.marker(
             [25.10124, 55.16332],
             {
                 icon: new L.Icon.Default()
                 }
-            ).addTo(map_6dddefbb379245289dc19b5917e10df5);
+            ).addTo(feature_group_e5bfd118590849c89837a81efb5336f0);
         
     
 
-                var icon_f77614217a4948bb9b03dea292ceed35 = L.AwesomeMarkers.icon({
+                var icon_8174345b32744e738912a4b522413e15 = L.AwesomeMarkers.icon({
                     icon: 'info-sign',
                     iconColor: 'white',
                     markerColor: 'green',
                     prefix: 'glyphicon',
                     extraClasses: 'fa-rotate-0'
                     });
-                marker_3e78d22be8844349b36eb69084d17dd9.setIcon(icon_f77614217a4948bb9b03dea292ceed35);
+                marker_c35a0c440f6147df9b5cab54b8d7612e.setIcon(icon_8174345b32744e738912a4b522413e15);
             
     
-            var popup_59941dea6e674d46b53ee6a10088d17f = L.popup({maxWidth: '300'
+            var popup_ea67d41fb76548acbe18bc09add9e052 = L.popup({maxWidth: '300'
             
             });
 
             
-                var html_42495a933b1e44dc96affdd5ca91431b = $('<div id="html_42495a933b1e44dc96affdd5ca91431b" style="width: 100.0%; height: 100.0%;">Timberline Lodge</div>')[0];
-                popup_59941dea6e674d46b53ee6a10088d17f.setContent(html_42495a933b1e44dc96affdd5ca91431b);
+                var html_8eab4ec5bca54997ae86e0b00a2c9812 = $('<div id="html_8eab4ec5bca54997ae86e0b00a2c9812" style="width: 100.0%; height: 100.0%;">Timberline Lodge</div>')[0];
+                popup_ea67d41fb76548acbe18bc09add9e052.setContent(html_8eab4ec5bca54997ae86e0b00a2c9812);
             
 
-            marker_3e78d22be8844349b36eb69084d17dd9.bindPopup(popup_59941dea6e674d46b53ee6a10088d17f)
+            marker_c35a0c440f6147df9b5cab54b8d7612e.bindPopup(popup_ea67d41fb76548acbe18bc09add9e052)
             ;
 
             
         
     
-        var marker_a7a5f4b3a57a430f8eea51cded083f1f = L.marker(
+        var marker_fd3665118e904c809c6b0bcf366ebe85 = L.marker(
             [25.10255, 55.16545],
             {
                 icon: new L.Icon.Default()
                 }
-            ).addTo(map_6dddefbb379245289dc19b5917e10df5);
+            ).addTo(feature_group_e5bfd118590849c89837a81efb5336f0);
         
     
 
-                var icon_a0388166657443c89be1f0fd7cca110c = L.AwesomeMarkers.icon({
+                var icon_949b87a83ea44d2a89ccf0a66f33e22f = L.AwesomeMarkers.icon({
                     icon: 'screenshot',
                     iconColor: 'white',
                     markerColor: 'red',
                     prefix: 'glyphicon',
                     extraClasses: 'fa-rotate-0'
                     });
-                marker_a7a5f4b3a57a430f8eea51cded083f1f.setIcon(icon_a0388166657443c89be1f0fd7cca110c);
+                marker_fd3665118e904c809c6b0bcf366ebe85.setIcon(icon_949b87a83ea44d2a89ccf0a66f33e22f);
             
     
-            var popup_88a4b8e4d6c74e40ac900bc5ad5ed4e0 = L.popup({maxWidth: '300'
+            var popup_9a3890fbef6e46cf9095f333bcb95588 = L.popup({maxWidth: '300'
             
             });
 
             
-                var html_1969614f4f86491fa2719203b181cf2c = $('<div id="html_1969614f4f86491fa2719203b181cf2c" style="width: 100.0%; height: 100.0%;"><p>Asset Name: Teltonika</p> <p><img src="https://html-online.com/editor/tinymce4_6_5/plugins/emoticons/img/smiley-cool.gif" alt="cool" /></p> <p>Speed: <span style="color: #ff0000;">12 km/hr</span></p> <p>&nbsp;</p> <p>&nbsp;</p></div>')[0];
-                popup_88a4b8e4d6c74e40ac900bc5ad5ed4e0.setContent(html_1969614f4f86491fa2719203b181cf2c);
+                var html_bc53d8e4321c44caba4af29a3e935a43 = $('<div id="html_bc53d8e4321c44caba4af29a3e935a43" style="width: 100.0%; height: 100.0%;"><p>Asset Name: Teltonika</p> <p><img src="https://html-online.com/editor/tinymce4_6_5/plugins/emoticons/img/smiley-cool.gif" alt="cool" /></p> <p>Speed: <span style="color: #ff0000;">12 km/hr</span></p> <p>&nbsp;</p> <p>&nbsp;</p></div>')[0];
+                popup_9a3890fbef6e46cf9095f333bcb95588.setContent(html_bc53d8e4321c44caba4af29a3e935a43);
             
 
-            marker_a7a5f4b3a57a430f8eea51cded083f1f.bindPopup(popup_88a4b8e4d6c74e40ac900bc5ad5ed4e0)
+            marker_fd3665118e904c809c6b0bcf366ebe85.bindPopup(popup_9a3890fbef6e46cf9095f333bcb95588)
             ;
 
             
         
     
-                var lat_lng_popup_139280da759e4bdf94cb761a931c3b81 = L.popup();
-                function latLngPop(e) {
-                    lat_lng_popup_139280da759e4bdf94cb761a931c3b81
-                        .setLatLng(e.latlng)
-                        .setContent("Latitude: " + e.latlng.lat.toFixed(4) +
-                                    "<br>Longitude: " + e.latlng.lng.toFixed(4))
-                        .openOn(map_6dddefbb379245289dc19b5917e10df5);
-                    }
-                map_6dddefbb379245289dc19b5917e10df5.on('click', latLngPop);
+            var layer_control_574753b7d5584a7293229549892019bf = {
+                base_layers : { "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=pk.eyj1ijoidgfsazj0cgmilcjhijoiy2ptenozdm0ymwlyntnwcghwbzc3dg9rncj9.nzvtxrk8evz6g_brbjonwg" : tile_layer_4af1616bd82849d5aecf736254ef1169, },
+                overlays : { "Teltonika" : feature_group_e5bfd118590849c89837a81efb5336f0, }
+                };
+            L.control.layers(
+                layer_control_574753b7d5584a7293229549892019bf.base_layers,
+                layer_control_574753b7d5584a7293229549892019bf.overlays,
+                {position: 'topright',
+                 collapsed: true,
+                 autoZIndex: true
+                }).addTo(map_355a3d7aa0f14573bd4d7e20ac8ad099);
             
+        
+    
+            var measure_control_d2dcb90297a4427f99dc695fa01d6859 = new L.Control.Measure(
+            {"position": "topright", "primaryLengthUnit": "meters", "secondaryLengthUnit": "miles", "primaryAreaUnit": "sqmeters", "secondaryAreaUnit": "acres"});
+            map_355a3d7aa0f14573bd4d7e20ac8ad099.addControl(measure_control_d2dcb90297a4427f99dc695fa01d6859);
+
+        
 </script>
