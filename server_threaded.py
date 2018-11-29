@@ -17,7 +17,7 @@ fmt = "%Y-%m-%d %H:%M:%S"
 
 TCP_IP = '192.168.168.11'
 #list of ports that will be opened
-TCP_PORTS = [6101,6102,9920]
+TCP_PORTS = [6101,6102]
 BUFFER_SIZE = 2048
 
 # mongodb connection
@@ -28,7 +28,6 @@ mycol = mydb["bce"]
 
 def gen_response():
     return 'this_is_the_return_from_the_server'
-
 
 
 
@@ -94,13 +93,13 @@ def serve_connection(connection,port):
             data = connection.recv(BUFFER_SIZE)
             if not data:
                 #attempt to close socket if no data
-                break
                 connection.close()
+                break
                 exit()
             else:
                 print(data)
                 if port == 6102:
-                    response=bce(data)
+                    response=teltonika(data)
                     if response:
                         connection.send(response)
                 elif port == 6101:

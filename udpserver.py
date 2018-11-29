@@ -25,7 +25,7 @@ def send_ack(param):
     #PACKETDATA = '83 05 01 02 03 04 05 01 01 02 01 00 01 00 00 00 00 00 00'
     print(PACKETDATA.hex())
     print("sending ack to {}".format(lmu))
-    host=lmu
+    host='10.115.187.244'
     port=20510
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect((host,port))
@@ -74,7 +74,7 @@ def process_data(data):
             ret= 0
         else:
             print("No ack will be send")
-            ret=1
+            ret=0
 
         retval =(ret,mobileid,seqno,msgtype)
 
