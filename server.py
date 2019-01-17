@@ -19,7 +19,7 @@ BUFFER_SIZE = 2048
 myclient = MongoClient("mongodb+srv://admin:W1nd0ws87@cluster0-wkvwq.gcp.mongodb.net/test?retryWrites=true")
 mydb = myclient["mydatabase"]
 mycol = mydb["bce"]
-
+raw =mydb["bceraw"]
 
 s1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s1.bind((TCP_IP, TCP_PORT1))
@@ -45,6 +45,9 @@ while 1:
                 pass
             else:
                     print(data.hex())
+                    raw_data = bceparser.create_dict_fromlist([data.hex()])
+                    y=raw.insert_one(raw_data)
+                    print("Raw Data inserted in mongodb with id {}".format(y.inserted_id))
                     value = bceparser.process_data(data.hex())
                     response = bceparser.process_ack(data.hex())
                     print(value)

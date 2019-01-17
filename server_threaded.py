@@ -24,6 +24,7 @@ BUFFER_SIZE = 2048
 myclient = MongoClient("mongodb+srv://admin:W1nd0ws87@cluster0-wkvwq.gcp.mongodb.net/test?retryWrites=true")
 mydb = myclient["mydatabase"]
 mycol = mydb["bce"]
+raw =mydb["bceraw"]
 
 
 def gen_response():
@@ -54,6 +55,9 @@ def bce(data):
                 if data.hex() =="0d0a":
                     pass
                 else:
+                    raw_data = bceparser.create_dict_fromlist([data.hex()])
+                    y=raw.insert_one(raw_data)
+                    print("Raw Data inserted in mongodb with id {}".format(y.inserted_id))
                     value = bceparser.process_data(data.hex())
                     response = bceparser.process_ack(data.hex())
                     print("Value = {}".format(value))
@@ -98,12 +102,12 @@ def serve_connection(connection,port):
                 exit()
             else:
                 print(data)
-                if port == 6102:
-                    response=teltonika(data)
+                if port == 6101:
+                    response=esp32.process_data(data)
                     if response:
                         connection.send(response)
-                elif port == 6101:
-                    response=generic(data)
+                elif port == 6102:
+                    response=bceparser.parsed_data(data.hex())
                     if response:
                         connection.send(response)
     finally:

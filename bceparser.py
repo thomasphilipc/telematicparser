@@ -143,6 +143,7 @@ def parse_string(data,lengthinbytes,content):
         val=available_data
     #data cordinates is a combination of events
     elif content == 'data_coord':
+        print(result)
         coord=[]
         lon =convert(reorder_hexstring(result[:8]))
         coord.append(lon)
@@ -243,6 +244,7 @@ def process_ack(data):
 # input :  data (string), bytes(int), contentidentifier(string)
 # output :  data (string) , val (string/int/list) , contentidentifier(string)
 def process_data(data):
+    proceed= True
     #function builds the message data
     result = []
     #IMEI
@@ -255,194 +257,206 @@ def process_data(data):
     data,val,content=parse_string(data,1,'serviceid')
     result.append(val)
     #confirmation key A
+
     data,val,content=parse_string(data,1,'confirmationkey')
     result.append(val)
+
+    # here you need to build a function that will keep processing the structure length
     #structure length
-    data,val,content=parse_string(data,1,'structurelength')
-    result.append(val)
-    data_length=val
-    #date time
-    data,val,content=parse_string(data,4,'data_time')
-    result.append(val)
-    # data mask 1
-    data,val,content=parse_string(data,2,'data_mask')
-    result.append(val)
-    # there will always be the first mask. however to determine if there are additional masks we must check the 15 bit if that is high there is the next mask
-    aggregateddatamasklist=[]
-    aggregateddatamasklist.append(val)
-    while (15 in val):
-        i=2
-        #addtional data mask if present
+    # while there is not more than two remaining bytes then proceed
+    while (proceed):
+        structure = []
+        print(data)
+        data,val,content=parse_string(data,1,'structurelength')
+        structure.append(val)
+        data_length=val
+        print(data_length)
+        #date time
+        data,val,content=parse_string(data,4,'data_time')
+        structure.append(val)
+        # data mask 1
         data,val,content=parse_string(data,2,'data_mask')
-        result.append(val)
+        structure.append(val)
+        # there will always be the first mask. however to determine if there are additional masks we must check the 15 bit if that is high there is the next mask
+        aggregateddatamasklist=[]
         aggregateddatamasklist.append(val)
-        i=i+1
-    #process mask values one at a time
-    num=0
-    for item in aggregateddatamasklist:
-        num=num+1
-        for i in item:
-            if num==1:
-                if i==0:
-                    data,val,content=parse_string(data,17,'data_coord')
-                    result.append(val)
-                elif i==1:
-                        data,val,content=parse_string(data,2,'data_di')
-                        result.append(val)
-                elif i==2:
-                        data,val,content=parse_string(data,2,'ADC1')
-                        result.append(val)
-                elif i==3:
-                        data,val,content=parse_string(data,2,'ADC2')
-                        result.append(val)
-                elif i==4:
-                        data,val,content=parse_string(data,2,'ADC3')
-                        result.append(val)
-                elif i==5:
-                        data,val,content=parse_string(data,2,'ADC4')
-                        result.append(val)
-                elif i==6:
-                        data,val,content=parse_string(data,2,'ADC5')
-                        result.append(val)
-                elif i==7:
-                        data,val,content=parse_string(data,2,'ADC6')
-                        result.append(val)
-                elif i==8:
-                        data,val,content=parse_string(data,2,'ADC7')
-                        result.append(val)
-                elif i==9:
-                        data,val,content=parse_string(data,2,'ADC8')
-                        result.append(val)
-                elif i==10:
-                        data,val,content=parse_string(data,4,'Countfreq1')
-                        result.append(val)
-                elif i==11:
-                        data,val,content=parse_string(data,4,'Countfreq2')
-                        result.append(val)
-                elif i==12:
+        while (15 in val):
+            i=2
+            #addtional data mask if present
+            data,val,content=parse_string(data,2,'data_mask')
+            structure.append(val)
+            aggregateddatamasklist.append(val)
+            i=i+1
+        #process mask values one at a time
+        num=0
+        for item in aggregateddatamasklist:
+            num=num+1
+            for i in item:
+                if num==1:
+                    if i==0:
+                        data,val,content=parse_string(data,17,'data_coord')
+                        structure.append(val)
+                    elif i==1:
+                            data,val,content=parse_string(data,2,'data_di')
+                            structure.append(val)
+                    elif i==2:
+                            data,val,content=parse_string(data,2,'ADC1')
+                            structure.append(val)
+                    elif i==3:
+                            data,val,content=parse_string(data,2,'ADC2')
+                            structure.append(val)
+                    elif i==4:
+                            data,val,content=parse_string(data,2,'ADC3')
+                            structure.append(val)
+                    elif i==5:
+                            data,val,content=parse_string(data,2,'ADC4')
+                            structure.append(val)
+                    elif i==6:
+                            data,val,content=parse_string(data,2,'ADC5')
+                            structure.append(val)
+                    elif i==7:
+                            data,val,content=parse_string(data,2,'ADC6')
+                            structure.append(val)
+                    elif i==8:
+                            data,val,content=parse_string(data,2,'ADC7')
+                            structure.append(val)
+                    elif i==9:
+                            data,val,content=parse_string(data,2,'ADC8')
+                            structure.append(val)
+                    elif i==10:
+                            data,val,content=parse_string(data,4,'Countfreq1')
+                            structure.append(val)
+                    elif i==11:
+                            data,val,content=parse_string(data,4,'Countfreq2')
+                            structure.append(val)
+                    elif i==12:
+                            data,val,content=parse_string(data,2,'filADC1')
+                            structure.append(val)
+                    elif i==13:
+                            data,val,content=parse_string(data,2,'filADC2')
+                            structure.append(val)
+                    elif i==14:
+                            data,val,content=parse_string(data,9,'gsminfo')
+                            structure.append(val)
+                if num==2:
+                    if i==0:
+                        data,val,content=parse_string(data,2,'wheelspeed')
+                        structure.append(val)
+                    elif i==1:
+                        data,val,content=parse_string(data,1,'accel_pedal')
+                        structure.append(val)
+                    elif i==2:
+                        data,val,content=parse_string(data,4,'total_fuel_used')
+                        structure.append(val)
+                    elif i==3:
+                        data,val,content=parse_string(data,1,'fuel_level')
+                        structure.append(val)
+                    elif i==4:
+                        data,val,content=parse_string(data,2,'tacho')
+                        structure.append(val)
+                    elif i==5:
+                        data,val,content=parse_string(data,4,'engine hours')
+                        structure.append(val)
+                    elif i==6:
+                        data,val,content=parse_string(data,4,'mileagse')
+                        structure.append(val)
+                    elif i==7:
+                        data,val,content=parse_string(data,1,'enginetemp')
+                        structure.append(val)
+                    elif i==8:
+                        data,val,content=parse_string(data,1,'ADC7')
+                        structure.append(val)
+                    elif i==9:
+                        data,val,content=parse_string(data,1,'ADC8')
+                        structure.append(val)
+                    elif i==10:
+                        data,val,content=parse_string(data,2,'Countfreq1')
+                        structure.append(val)
+                    elif i==11:
+                        data,val,content=parse_string(data,8,'Countfreq2')
+                        structure.append(val)
+                    elif i==12:
                         data,val,content=parse_string(data,2,'filADC1')
-                        result.append(val)
-                elif i==13:
-                        data,val,content=parse_string(data,2,'filADC2')
-                        result.append(val)
-                elif i==14:
-                        data,val,content=parse_string(data,9,'gsminfo')
-                        result.append(val)
-            if num==2:
-                if i==0:
-                    data,val,content=parse_string(data,2,'wheelspeed')
-                    result.append(val)
-                elif i==1:
-                    data,val,content=parse_string(data,1,'accel_pedal')
-                    result.append(val)
-                elif i==2:
-                    data,val,content=parse_string(data,4,'total_fuel_used')
-                    result.append(val)
-                elif i==3:
-                    data,val,content=parse_string(data,1,'fuel_level')
-                    result.append(val)
-                elif i==4:
-                    data,val,content=parse_string(data,2,'tacho')
-                    result.append(val)
-                elif i==5:
-                    data,val,content=parse_string(data,4,'engine hours')
-                    result.append(val)
-                elif i==6:
-                    data,val,content=parse_string(data,4,'mileagse')
-                    result.append(val)
-                elif i==7:
-                    data,val,content=parse_string(data,1,'enginetemp')
-                    result.append(val)
-                elif i==8:
-                    data,val,content=parse_string(data,1,'ADC7')
-                    result.append(val)
-                elif i==9:
-                    data,val,content=parse_string(data,1,'ADC8')
-                    result.append(val)
-                elif i==10:
-                    data,val,content=parse_string(data,2,'Countfreq1')
-                    result.append(val)
-                elif i==11:
-                    data,val,content=parse_string(data,8,'Countfreq2')
-                    result.append(val)
-                elif i==12:
-                    data,val,content=parse_string(data,2,'filADC1')
-                    result.append(val)
-                elif i==13:
-                    data,val,content=parse_string(data,8,'filADC2')
-                    result.append(val)
-                elif i==14:
-                    data,val,content=parse_string(data,2,'gsminfo')
-                    result.append(val)
-            if num==3:
-                if i==0:
-                    data,val,content=parse_string(data,2,'wheelspeed')
-                    result.append(val)
-                elif i==1:
-                    data,val,content=parse_string(data,4,'accel_pedal')
-                    result.append(val)
-                elif i==2:
-                    data,val,content=parse_string(data,3,'total_fuel_used')
-                    result.append(val)
-                elif i==3:
-                    data,val,content=parse_string(data,1,'fuel_level')
-                    result.append(val)
-                elif i==4:
-                    data,val,content=parse_string(data,20,'tacho')
-                    result.append(val)
-                elif i==5:
-                    data,val,content=parse_string(data,2,'engine hours')
-                    result.append(val)
-                elif i==6:
-                    data,val,content=parse_string(data,8,'mileagse')
-                    result.append(val)
-                elif i==7:
-                    data,val,content=parse_string(data,2,'ADC6')
-                    result.append(val)
-                elif i==8:
-                    data,val,content=parse_string(data,2,'ADC7')
-                    result.append(val)
-                elif i==9:
-                    data,val,content=parse_string(data,6,'ADC8')
-                    result.append(val)
-                elif i==10:
-                    data,val,content=parse_string(data,6,'Countfreq1')
-                    result.append(val)
-                elif i==11:
-                    data,val,content=parse_string(data,21,'Countfreq2')
-                    result.append(val)
-                elif i==12:
-                    data,val,content=parse_string(data,20,'filADC1')
-                    result.append(val)
-                elif i==13:
-                    data,val,content=parse_string(data,9,'filADC2')
-                    result.append(val)
-                elif i==14:
-                    data,val,content=parse_string(data,21,'gsminfo')
-                    result.append(val)
-            if num==4:
-                if i==0:
-                    data,val,content=parse_string(data,4,'wheelspeed')
-                    result.append(val)
-                elif i==1:
-                    data,val,content=parse_string(data,30,'accel_pedal')
-                    result.append(val)
-                elif i==2:
-                    data,val,content=parse_string(data,4,'total_fuel_used')
-                    result.append(val)
-                else:
-                    data,val,content=parse_string(data,4,'total_fuel_used')
-                    result.append(val)
-            if num==5:
-                if i==0:
-                    data,val,content=parse_string(data,4,'wheelspeed')
-                    result.append(val)
-                elif i==1:
-                    data,val,content=parse_string(data,1,'accel_pedal')
-                    result.append(val)
-                elif i==2:
-                    data,val,content=parse_string(data,66,'total_fuel_used')
-                    result.append(val)
+                        structure.append(val)
+                    elif i==13:
+                        data,val,content=parse_string(data,8,'filADC2')
+                        structure.append(val)
+                    elif i==14:
+                        data,val,content=parse_string(data,2,'gsminfo')
+                        structure.append(val)
+                if num==3:
+                    if i==0:
+                        data,val,content=parse_string(data,2,'wheelspeed')
+                        structure.append(val)
+                    elif i==1:
+                        data,val,content=parse_string(data,4,'accel_pedal')
+                        structure.append(val)
+                    elif i==2:
+                        data,val,content=parse_string(data,3,'total_fuel_used')
+                        structure.append(val)
+                    elif i==3:
+                        data,val,content=parse_string(data,1,'fuel_level')
+                        structure.append(val)
+                    elif i==4:
+                        data,val,content=parse_string(data,20,'tacho')
+                        structure.append(val)
+                    elif i==5:
+                        data,val,content=parse_string(data,2,'engine hours')
+                        structure.append(val)
+                    elif i==6:
+                        data,val,content=parse_string(data,8,'mileagse')
+                        structure.append(val)
+                    elif i==7:
+                        data,val,content=parse_string(data,2,'ADC6')
+                        structure.append(val)
+                    elif i==8:
+                        data,val,content=parse_string(data,2,'ADC7')
+                        structure.append(val)
+                    elif i==9:
+                        data,val,content=parse_string(data,6,'ADC8')
+                        structure.append(val)
+                    elif i==10:
+                        data,val,content=parse_string(data,6,'Countfreq1')
+                        structure.append(val)
+                    elif i==11:
+                        data,val,content=parse_string(data,21,'Countfreq2')
+                        structure.append(val)
+                    elif i==12:
+                        data,val,content=parse_string(data,20,'filADC1')
+                        structure.append(val)
+                    elif i==13:
+                        data,val,content=parse_string(data,9,'filADC2')
+                        structure.append(val)
+                    elif i==14:
+                        data,val,content=parse_string(data,21,'gsminfo')
+                        structure.append(val)
+                if num==4:
+                    if i==0:
+                        data,val,content=parse_string(data,4,'wheelspeed')
+                        structure.append(val)
+                    elif i==1:
+                        data,val,content=parse_string(data,30,'accel_pedal')
+                        structure.append(val)
+                    elif i==2:
+                        data,val,content=parse_string(data,4,'total_fuel_used')
+                        structure.append(val)
+                    else:
+                        data,val,content=parse_string(data,4,'total_fuel_used')
+                        structure.append(val)
+                if num==5:
+                    if i==0:
+                        data,val,content=parse_string(data,4,'wheelspeed')
+                        structure.append(val)
+                    elif i==1:
+                        data,val,content=parse_string(data,1,'accel_pedal')
+                        structure.append(val)
+                    elif i==2:
+                        data,val,content=parse_string(data,66,'total_fuel_used')
+                        structure.append(val)
+        result.append(structure)
+        print("length of reamining data is {}".format(len(data)))
+        if len(data)<20:
+            proceed= False
 
 
 
@@ -452,4 +466,4 @@ def process_data(data):
     return result
 
 if __name__ == '__main__':
-    parsed_data("d11fa1e3fb1603003c02a5823897bf56a28bc0008040800400fda65c42efcac841001800400000000000308400000610a8010275108b3000410000000000000000000000003857c356a28bc0008040800400fda65c42efcac84100180040000000000030840000f60fa8010275108b3000420000000000000000000000003817c756a28bc0008040800400fda65c42efcac84100180040000000000030840000e60fa8010275108b30004300000000000000000000000038d7ca56a28bc0008040800400fda65c42efcac84100190040000000000030840000f10fa8010275108b30004200000000000000000000000038d7cc56a28bc0008040800400fda65c42efcac84100180040000000000020800000e60fa8010275108630003f0000000000000000000000003887d456a28bc00080408004000ba75c42e3c9c841001b00fbff0000000020800000d40fa8010275108b30003f0000000000000000000000003807ee56a28bc0008040800400f4a65c4230cac841002a000f000000000020800000ac0fa8010275108630003c00000000000000000000000038570757a28bc000804080040004a75c420bcac84100190001000000000020800000920fa8010275108b30003f00000000000000000000000038e72057a28bc0008040800400fea65c4219cac841001c0003000000000020800000700fa8010275108630004100000000000000000000000038473a57a28bc000804080040005a75c4210cac841001c0005000000000020800000490fa8010275108b30003f000000000000000000000000ab")
+    parsed_data("4c79e971581403007501a50f2c979e34a68bc000800080000005a75c42e3c9c841001a01feff00000000a0809801530da801027510f96600472ce79e34a68bc000800080000005a75c42e3c9c841002a01feff00000000a0809801610da801027510f96600472c379f34a68bc000800080000005a75c42e3c9c841002901feff00000000a1809001510da801027510f96600472c579f34a68bc000800080000005a75c42e3c9c841002901feff00000000a0809801600da801027510f96600472ca79f34a68bc000800080000005a75c42e3c9c841002901feff00000000a0809801600d0000000000000000002cf79f34a68bc000800080000005a75c42e3c9c841002901feff00000000a08098015c0d0000000000000000001bf77335a68ac0008000800000e08091376b0da801027510f96600431b477435a68ac0008000800000e080a237790da801027510f96600432c277635a68bc000800080000004a75c4223cac841002787000000000000e0809a37830da801027510f966004303")
