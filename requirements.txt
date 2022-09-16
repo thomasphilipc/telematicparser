@@ -15,7 +15,7 @@ idna==2.7
 iso8601==0.1.12
 itsdangerous==0.24
 Jinja2==2.10
-Mako==1.0.7
+Mako==1.2.2
 MarkupSafe==1.0
 numpy==1.14.3
 oauthlib==2.1.0
